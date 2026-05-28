@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch Sử Giao Dịch</title>
+</head>
+<body>
+    <h1>DANH SÁCH GIAO DỊCH NẠP TIỀN</h1>
+    
+    <button onclick="themGiaoDich()" style="background: red; color: white; padding:10px; border: none; cursor: pointer; font-weight: bold;">
+        Thêm giao dịch mẫu
+    </button>
+
+    <div id="hien_thi" style="margin-top: 20px;"></div>
+
+    <script>
+        // Hàm tải dữ liệu từ API /api/giaodich và hiển thị
+        function xem() {
+            fetch('/api/giaodich')
+                .then(res => res.json())
+                .then(data => {
+                    var html = "";
+                    for (var i = 0; i < data.length; i++) {
+                        html += "<div style='border-bottom: 1px solid #ccc; padding: 8px 0;'>";
+                        html += "<p><b>Loại: " + data[i].loaiGiaoDich + "</b><br>";
+                        html += "Mã GD (Id): " + data[i].id + "<br>";
+                        html += "Số tài khoản: " + data[i].soTaiKhoan + "<br>";
+                        html += "Số tiền: <span style='color: green;'>" + data[i].soTien.toLocaleString() + "đ</span></p>";
+                        html += "</div>";
+                    }
+                    document.getElementById("hien_thi").innerHTML = html;
+                });
+        }
+
+        // Hàm gọi POST để thêm mới một giao dịch mẫu rồi tải lại danh sách
+        function themGiaoDich() {
+            fetch('/api/giaodich', { 
+                method: 'POST' 
+            }).then(() => xem());
+        }
+
+        // Tự động chạy tải dữ liệu ngay khi vừa load trang
+        xem();
+    </script>
+</body>
+</html>
